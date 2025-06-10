@@ -53,7 +53,7 @@ fi
 function sail_is_not_running {
     echo -e "${WHITE}Sail is not running.${NC}"
     echo ""
-    echo -e "${WHITE}You may Sail using the following commands:${NC} './sail up' or './sail up -d'"
+    echo -e "${WHITE}You may Sail using the following commands:${NC} './vendor/bin/sail up' or './vendor/bin/sail up -d'"
 
     exit 1
 }
@@ -191,6 +191,19 @@ if [ $# -gt 0 ]; then
                 -u sail \
                 "$APP_SERVICE" \
                 bash
+        else
+            sail_is_not_running
+        fi
+
+    # Share the site...
+    elif [ "$1" == "share" ]; then
+        shift 1
+
+        if [ "$EXEC" == "yes" ]; then
+            docker run --init beyondcodegmbh/expose-server share http://host.docker.internal:"$APP_PORT" \
+            --server-host=laravel-sail.site \
+            --server-port=8080 \
+            "$@"
         else
             sail_is_not_running
         fi
